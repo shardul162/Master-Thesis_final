@@ -25,9 +25,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-
-
-
 //import GUI.FileLog;
 //import GUI.Surface;
 
@@ -205,7 +202,7 @@ public class GUI implements Runnable{
 	
 	public void Stimulus() throws FileNotFoundException
 	{
-		final Surface surface = new Surface(fileName);
+		Surface surface = new Surface(fileName);
 		
 		FileLog resultSave = new FileLog();
     	JFrame Stimulus = new JFrame("Stimulus");
@@ -342,10 +339,11 @@ public class GUI implements Runnable{
 }
 	public void run(){
 		try{
+			
 			Welcome();
 			
 		}catch(Exception e){
-			
+			System.out.println("error in GUI");
 		}
 	}
 	
