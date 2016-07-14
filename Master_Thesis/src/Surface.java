@@ -21,11 +21,13 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 //import GUI.Eye_Tracker;
+
+//import GUI.Eye_Tracker;
 //import GUI.Surface.ScreenOffset;
 
 public class Surface extends JPanel implements ActionListener  {
 
-
+	//private Eye_Tracker eTracker;
     private final int DELAY = 50;
     private Timer timer;
     private Image circle; // the normal (red) dot image
@@ -34,6 +36,7 @@ public class Surface extends JPanel implements ActionListener  {
     BufferedReader br;
     int x = 0, y = 0;
     public StringBuffer dataBuffer = new StringBuffer("");
+    boolean Tstart = false;
 
     SimpleDateFormat sdf; 
     String formattedDate;
@@ -67,7 +70,9 @@ public class Surface extends JPanel implements ActionListener  {
     }
     
     public Surface(String fn) throws FileNotFoundException {
-		Eye_Tracker eTracker = new Eye_Tracker();
+		//Eye_Tracker eTracker = new Eye_Tracker(); 
+		//eTracker.start(true);
+    	//Tstart = true;
     	br = new BufferedReader(new FileReader(fn));
     
     	date = new Date();
@@ -106,8 +111,10 @@ public class Surface extends JPanel implements ActionListener  {
     
     
     // the drawing function
-    private boolean doDrawing(Graphics g) throws IOException {
-
+    public boolean doDrawing(Graphics g) throws IOException {
+    	Eye_Tracker getCoords = new Eye_Tracker();
+    	Eye_Tracker eTracker = new Eye_Tracker(); 
+		eTracker.start(true);
     	// Read the .csv values
 	    String splitBy = ","; // the .csv values are separated by a comma
 		String line;   
@@ -162,8 +169,9 @@ public class Surface extends JPanel implements ActionListener  {
 	    g2d.drawImage(circle, x,y, null);
 	   
 	    
-	    dataBuffer.append(x + "," + y + "," + (eTracker.gaze_x_coordinate - xOffset )+ "," + (eTracker.gaze_y_coordinate - yOffset) + "\n");
-System.out.println("Update UI: " + x + ", " + y);
+	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
+
+	    System.out.println("Update UI: " + x + ", " + y);
 	    return true;
     }
 
