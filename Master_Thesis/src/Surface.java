@@ -36,24 +36,29 @@ public class Surface extends JPanel implements ActionListener  {
     BufferedReader br;
     int x = 0, y = 0;
     public StringBuffer dataBuffer = new StringBuffer("");
-    boolean Tstart = false;
 
     SimpleDateFormat sdf; 
     String formattedDate;
     Date date;
+    
     // The random number used for the color change
     int counter = 1;
     boolean colorChanged = false;
     Random r = new Random();
-    int Low = 400;
-    int High = 1000;
+    int Low = 4000;
+    int High = 10000;
     int randomTime = r.nextInt(High-Low) + Low;
     public ScreenOffset screenOffset;
 	Toolkit tk;
 	boolean firstTime;
 	double xOffset, yOffset;
-    
-    
+	
+	//for 60FPS
+	double interpolation = 0;
+	final int TICKS_PER_SECOND = 20;
+	final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+	final int MAX_FRAMESKIP = 3;
+	
     private class ScreenOffset{
 	    public double widthOffset;
 	    public double heightOffset;
@@ -70,9 +75,7 @@ public class Surface extends JPanel implements ActionListener  {
     }
     
     public Surface(String fn) throws FileNotFoundException {
-		//Eye_Tracker eTracker = new Eye_Tracker(); 
-		//eTracker.start(true);
-    	//Tstart = true;
+
     	br = new BufferedReader(new FileReader(fn));
     
     	date = new Date();
@@ -109,12 +112,38 @@ public class Surface extends JPanel implements ActionListener  {
         return timer;
     }
     
+    public void storeCoords() throws IOException{
+    	
+    	float[][] CoordsList = new float [200][2] ;
+    	
+    	String splitBy = ","; // the .csv values are separated by a comma
+		String line;   
+		while((line = br.readLine()) != null){
+			
+			for(int i = 0;i<200;i++){
+				for(int j=0;j<2;j++){
+					
+					//to save in X and Y
+					String[] b = line.split(splitBy);
+					CoordsList[i][j]= (int)Float.parseFloat(b[j]);
+					
+					
+				}
+			}
+			
+			
+		}
+
+    }
+    
     
     // the drawing function
     public boolean doDrawing(Graphics g) throws IOException {
+    	
     	Eye_Tracker getCoords = new Eye_Tracker();
     	Eye_Tracker eTracker = new Eye_Tracker(); 
 		eTracker.start(true);
+		
     	// Read the .csv values
 	    String splitBy = ","; // the .csv values are separated by a comma
 		String line;   
@@ -123,26 +152,17 @@ public class Surface extends JPanel implements ActionListener  {
 		if(firstTime){
 			// get the pane size once in the beginning.
 			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
-			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());
-			
-//			screenOffset.setOffset(this.getRootPane().getSize().getWidth(), this.getRootPane().getSize().getHeight());
-/*
-			System.out.println("Pane: " + this.getRootPane().getSize().getWidth() + ", " + this.getRootPane().getSize().getHeight());
-	        System.out.println("Difference: " + xOffset + ", " + yOffset);
-	        System.out.println("Actual: " + tk.getScreenSize().getWidth() + ", " + tk.getScreenSize().getHeight());
-*/				
+			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());		
 	        firstTime = false;
+		
 		}
 		if(line == null)
 		{
 			timer.stop();
 			ended = true;
-/*
-			Toolkit tk = this.getToolkit();
-			    Dimension dim = tk.getScreenSize();
-*/
-			    int messageX = (int) screenOffset.actualScreenDimension.getWidth() / 2;
-			    int messageY = (int) screenOffset.actualScreenDimension.getHeight() /2;
+
+			int messageX = (int) screenOffset.actualScreenDimension.getWidth() / 2;
+			int messageY = (int) screenOffset.actualScreenDimension.getHeight() /2;
 		    int fontSize = 20;
 
 		    g.setFont(new Font("Calibri", Font.PLAIN, fontSize));
@@ -164,6 +184,7 @@ public class Surface extends JPanel implements ActionListener  {
         
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
+	     
 	    x = (int)Float.parseFloat(b[0]);
 	    y = (int)Float.parseFloat(b[1]);
 	    g2d.drawImage(circle, x,y, null);
@@ -171,27 +192,88 @@ public class Surface extends JPanel implements ActionListener  {
 	    
 	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
 
-	    System.out.println("Update UI: " + x + ", " + y);
+	//    System.out.println("Update UI: " + x + ", " + y);
 	    return true;
+	    
+	    
     }
 
     @Override
+    //call for drawing
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        double next_game_tick = System.currentTimeMillis();
+        int loops;
+        double currentTime;
+        double PassedTime;
+        double skips = 1/60;
+        //getCoords();
+        
+    /*    
         try {
 			doDrawing(g);
-			
+				
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+       
+      //First method for achieving 60fps
+      /*
+        	 loops = 0;
+             while (System.currentTimeMillis() > next_game_tick
+                     && loops < MAX_FRAMESKIP) {
+            	 
+                 next_game_tick += SKIP_TICKS;
+                 loops++;
+             }
+             interpolation = (System.currentTimeMillis() + SKIP_TICKS - next_game_tick
+                     / (double) SKIP_TICKS);
+             try {
+       			doDrawing(g);
+       			
+       				
+       		} catch (IOException e) {
+       			
+       			e.printStackTrace();
+       		}*/
+             
+          //Try with an if else statement where we check if 1/60 seconds have passed 
+            
+            currentTime = System.currentTimeMillis();
+            try {
+       			doDrawing(g);
+       			
+       				
+       		} catch (IOException e) {
+       			
+       			e.printStackTrace();
+       		}
+            
+            PassedTime = System.currentTimeMillis();
+            System.out.println(PassedTime-currentTime);
+            while(PassedTime-currentTime <= (50/3)){
+            	
+            	PassedTime = System.currentTimeMillis(); 
+            	
+            	//System.out.println(PassedTime-currentTime);
+            	
+            	
+            }
+            
+            
+             
+        
+       
+        
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
     
         repaint();
-		System.out.println("Update UI :" + Calendar.getInstance().getTime().getSeconds());
+        
+		//System.out.println("Update UI :" + Calendar.getInstance().getTime().getSeconds());
 
     }
     public  StringBuffer getBuffer() {
@@ -200,3 +282,4 @@ public class Surface extends JPanel implements ActionListener  {
 
 
 }
+

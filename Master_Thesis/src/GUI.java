@@ -70,7 +70,7 @@ public class GUI implements Runnable{
 
 		submitBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				String newUser = ".\\Logs\\";
+				String newUser = "./Logs/";
 				newUser += txt.getText();	
 				new File(newUser).mkdirs();
 				F.dispose();
@@ -271,6 +271,7 @@ public class GUI implements Runnable{
 	{
 		// Get the .csv filenames to a string list
 				File dir = new File(".");
+				System.out.println(dir.getAbsolutePath());
 				List<String> csvlist = Arrays.asList(dir.list(
 				   new FilenameFilter() {
 				      @Override public boolean accept(File dir, String name) {
@@ -286,7 +287,7 @@ public class GUI implements Runnable{
 	public String[] getCurrentUsers()
 	{
 		String dirs = ""; 
-        File logFolders = new File(".\\Logs");
+        File logFolders = new File("./Logs");
         File[] filesList = logFolders.listFiles();
         for(File f : filesList){
             if(f.isDirectory())
@@ -299,7 +300,7 @@ public class GUI implements Runnable{
 	
 	class FileLog{
 		public String constructFileName(String currentUser, String type) {
-			return logFilePath = ".\\Logs\\" + currentUser +"\\" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());
+			return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" + currentUser +"/" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());
 		}
 		
 		
