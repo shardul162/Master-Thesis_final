@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -123,7 +124,7 @@ public class Surface extends JPanel implements ActionListener  {
 		while((line = br.readLine()) != null){
 			
 			String[] b = line.split(splitBy);
-			al.add(b);
+			al.addAll(Arrays.asList(b));
 			System.out.println("Contents of al:" +al);
 		
 				
