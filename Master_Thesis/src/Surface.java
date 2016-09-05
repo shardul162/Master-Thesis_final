@@ -118,17 +118,23 @@ public class Surface extends JPanel implements ActionListener  {
     	
     	//Array List Method
     	
-    	ArrayList al = new ArrayList();
+    	ArrayList<Float> al = new ArrayList<Float>();
     	String splitBy = ","; // the .csv values are separated by a comma
 		String line;
 		while((line = br.readLine()) != null){
 			
 			String[] b = line.split(splitBy);
-			al.addAll(Arrays.asList(b));
+			Float[] floatArray = new Float[b.length];
+			for(int i = 0;i<= b.length;i++){
+					floatArray[i]= Float.parseFloat(b[i]);
+			}
+					
+			al.addAll(Arrays.asList(floatArray));
 			System.out.println("Contents of al:" +al);
-		
-				
+	
 		}
+		//x = (int)al.get(1);
+		//System.out.println("first element: "+x);
     	
     	
     	
@@ -294,12 +300,7 @@ public class Surface extends JPanel implements ActionListener  {
             	
             	
             }
-            
-            
-             
-        
-       
-        
+                
     }
 
     @Override
