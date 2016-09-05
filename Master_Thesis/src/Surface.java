@@ -125,12 +125,21 @@ public class Surface extends JPanel implements ActionListener  {
 			
 			String[] b = line.split(splitBy);
 			Float[] floatArray = new Float[b.length];
-			for(int i = 0;i<= b.length;i++){
+			for(int i = 0;i< b.length;i++){
 					floatArray[i]= Float.parseFloat(b[i]);
-			}
+					System.out.println("The floatArray contains: "+floatArray[i]);
 					
-			al.addAll(Arrays.asList(floatArray));
-			System.out.println("Contents of al:" +al);
+			}
+			for(float f:floatArray)	{
+				al.add(Float.valueOf(f));
+				//al.add(f);
+				System.out.println("Contents of al:" +al);
+			}
+			
+			
+			
+			//al.addAll(Arrays.asList(floatArray));
+			//System.out.println("Contents of al:" +al);
 	
 		}
 		//x = (int)al.get(1);
