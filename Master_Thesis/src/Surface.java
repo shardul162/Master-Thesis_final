@@ -122,10 +122,10 @@ public class Surface extends JPanel implements ActionListener  {
     	ArrayList<Float[]> al = new ArrayList<Float[]>();
     	String splitBy = ","; // the .csv values are separated by a comma
 		String line;
+		int index = 0;
 		while((line = br.readLine()) != null){
 			
 			String[] b = line.split(splitBy);//reading coordinates
-			int index = 0;
 			Float[] floatArray = new Float[b.length];
 			Integer[] crds = new Integer[2];
 			
@@ -136,15 +136,8 @@ public class Surface extends JPanel implements ActionListener  {
 							
 			}
 			System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
-			al.add(index, floatArray);
-			index++;
-			
-			
-			for(int z = 0;z< al.size();z++){
-				System.out.println("Contents of al: "+al);
-			}
-			
-			
+			al.add(floatArray);
+			//index++;
 
 		/*	for(float f:floatArray)	{
 				//Float[] crds = new Float[2];
@@ -161,7 +154,10 @@ public class Surface extends JPanel implements ActionListener  {
 			}
 			*/
 	
-		}
+		}System.out.println("Contents of al:" +al);
+		
+		
+		
 		//x = (int)al.get(1);
 		//System.out.println("first element: "+x);
     	
