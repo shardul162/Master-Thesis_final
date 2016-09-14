@@ -118,40 +118,48 @@ public class Surface extends JPanel implements ActionListener  {
     	
     	//Array List Method
     	
+    	//ArrayList<Float> al = new ArrayList<Float>();
     	ArrayList<Float[]> al = new ArrayList<Float[]>();
     	String splitBy = ","; // the .csv values are separated by a comma
 		String line;
 		while((line = br.readLine()) != null){
 			
-			String[] b = line.split(splitBy);
+			String[] b = line.split(splitBy);//reading coordinates
+			int index = 0;
 			Float[] floatArray = new Float[b.length];
+			Integer[] crds = new Integer[2];
 			
 			
 			for(int i = 0;i< b.length;i++){
 				
 					floatArray[i]= Float.parseFloat(b[i]);
-					System.out.println("The floatArray contains: "+floatArray[i]);
-					
+							
+			}
+			System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
+			al.add(index, floatArray);
+			index++;
+			
+			
+			for(int z = 0;z< al.size();z++){
+				System.out.println("Contents of al: "+al);
 			}
 			
 			
-		
-			for(float f:floatArray)	{
-				Float[] crds = new Float[2];
+
+		/*	for(float f:floatArray)	{
+				//Float[] crds = new Float[2];
 				
-				for(int k = 1; k< 2; k++){
+				for(int k = 0; k< 2; k++){
 					crds[k]=Float.valueOf(f);
+					
 				}
+				System.out.println("Contents of crds:" +crds[0] + " and" +crds[1]);
 				//al.add(Float.valueOf(f));
-				//al.add(f);
+				//al.add((float)f);
 				al.add(crds);
 				System.out.println("Contents of al:" +al);
 			}
-			
-			
-			
-			//al.addAll(Arrays.asList(floatArray));
-			//System.out.println("Contents of al:" +al);
+			*/
 	
 		}
 		//x = (int)al.get(1);
