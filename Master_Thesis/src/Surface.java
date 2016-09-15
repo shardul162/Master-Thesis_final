@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -113,22 +114,29 @@ public class Surface extends JPanel implements ActionListener  {
         
         return timer;
     }
-    
+ /*   
     public void storeCoords() throws IOException{
     	
     	//Array List Method
     	
     	//ArrayList<Float> al = new ArrayList<Float>();
-    	ArrayList<Float[]> al = new ArrayList<Float[]>();
+    	List<Float[]> al = new ArrayList<Float[]>();
     	String splitBy = ","; // the .csv values are separated by a comma
 		String line;
 		int index = 0;
+		
+		if(firstTime){
+			// get the pane size once in the beginning.
+			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
+			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());		
+	        firstTime = false;
+		
+		}
+		
 		while((line = br.readLine()) != null){
 			
 			String[] b = line.split(splitBy);//reading coordinates
 			Float[] floatArray = new Float[b.length];
-			Integer[] crds = new Integer[2];
-			
 			
 			for(int i = 0;i< b.length;i++){
 				
@@ -136,73 +144,57 @@ public class Surface extends JPanel implements ActionListener  {
 							
 			}
 			System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
+			
 			al.add(floatArray);
-			//index++;
+				
+		}
 
-		/*	for(float f:floatArray)	{
-				//Float[] crds = new Float[2];
-				
-				for(int k = 0; k< 2; k++){
-					crds[k]=Float.valueOf(f);
-					
-				}
-				System.out.println("Contents of crds:" +crds[0] + " and" +crds[1]);
-				//al.add(Float.valueOf(f));
-				//al.add((float)f);
-				al.add(crds);
-				System.out.println("Contents of al:" +al);
-			}
-			*/
-	
-		}System.out.println("Contents of al:" +al);
 		
-		
-		
-		//x = (int)al.get(1);
-		//System.out.println("first element: "+x);
-    	
-    	
-    	
-    /*	
-    	
-    	float[][] CoordsList = new float [200][2] ;
-    	
-    	
-    	//array list
-    	//k++ counter 
-    	//save timestamp in array and after done save in text file 
-    	
-    	
-    	String splitBy = ","; // the .csv values are separated by a comma
-		String line;   
-		while((line = br.readLine()) != null){
-			
-			for(int i = 0;i<200;i++){
-				
-				String[] b = line.split(splitBy);
-				
-				for(int j=0;j<2;j++){
-					
-					//to save in X and Y
-					
-					CoordsList[i][j]= (int)Float.parseFloat(b[j]);	
-					
-				}
-			}
-			
-			
-		}*/
 
-    }
+    }*/
     
     
     // the drawing function
     public boolean doDrawing(Graphics g) throws IOException {
     	
     	Eye_Tracker getCoords = new Eye_Tracker();
-    	Eye_Tracker eTracker = new Eye_Tracker(); 
+    	Eye_Tracker eTracker = new Eye_Tracker();
+    	Float[] tempo = new Float[2];
+    	
 		eTracker.start(true);
 		
+		//ArrayList<Float> al = new ArrayList<Float>();
+    	List<Float[]> al = new ArrayList<Float[]>();
+    	String splitBy = ","; // the .csv values are separated by a comma
+		String line;
+		int index = 0;
+		
+		if(firstTime){
+			// get the pane size once in the beginning.
+			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
+			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());		
+	        firstTime = false;
+		
+		}
+		
+		while((line = br.readLine()) != null){
+			
+			String[] b = line.split(splitBy);//reading coordinates
+			Float[] floatArray = new Float[b.length];
+			
+			for(int i = 0;i< b.length;i++){
+				
+					floatArray[i]= Float.parseFloat(b[i]);
+							
+			}
+			System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
+			
+			al.add(floatArray);
+				
+		}
+	
+		
+		/*
     	// Read the .csv values
 	    String splitBy = ","; // the .csv values are separated by a comma
 		String line;   
@@ -240,13 +232,30 @@ public class Surface extends JPanel implements ActionListener  {
 			circle = new ImageIcon("circle_im_blue.png").getImage();
 		
 		String[] b = line.split(splitBy); // get the coordinates
-        
+       */ 
+		
+		counter++;
+		if(counter == randomTime)
+			circle = new ImageIcon("circle_im_blue.png").getImage();
+		
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
-	     
+	    
+	    for(int c = 0; c< al.size(); c++){
+	    	
+	    	tempo = al.get(c);
+	    	int x = Math.round(tempo[0]);
+	    	int y = Math.round(tempo[0]);
+	    	g2d.drawImage(circle, x,y, null);
+	    	
+	    }
+	    
+	    /*
 	    x = (int)Float.parseFloat(b[0]);
 	    y = (int)Float.parseFloat(b[1]);
-	    g2d.drawImage(circle, x,y, null);
+	    
+	    */
+	   // g2d.drawImage(circle, x,y, null);
 	   
 	    
 	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
@@ -267,12 +276,12 @@ public class Surface extends JPanel implements ActionListener  {
         double PassedTime;
         double skips = 1/60;
         
-        try {
+     /*   try {
 			storeCoords();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
         
     /*    
         try {
@@ -283,25 +292,7 @@ public class Surface extends JPanel implements ActionListener  {
 			e.printStackTrace();
 		}*/
        
-      //First method for achieving 60fps
-      /*
-        	 loops = 0;
-             while (System.currentTimeMillis() > next_game_tick
-                     && loops < MAX_FRAMESKIP) {
-            	 
-                 next_game_tick += SKIP_TICKS;
-                 loops++;
-             }
-             interpolation = (System.currentTimeMillis() + SKIP_TICKS - next_game_tick
-                     / (double) SKIP_TICKS);
-             try {
-       			doDrawing(g);
-       			
-       				
-       		} catch (IOException e) {
-       			
-       			e.printStackTrace();
-       		}*/
+
              
           //Try with an if else statement where we check if 1/60 seconds have passed 
             
