@@ -125,13 +125,6 @@ public class Surface extends JPanel implements ActionListener  {
 		String line;
 		int index = 0;
 		
-		if(firstTime){
-			// get the pane size once in the beginning.
-			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
-			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());		
-	        firstTime = false;
-		
-		}
 		
 		while((line = br.readLine()) != null){
 			
@@ -165,6 +158,7 @@ public class Surface extends JPanel implements ActionListener  {
 		
 		//ArrayList<Float> al = new ArrayList<Float>();
     	List<Float[]> al = new ArrayList<Float[]>();
+    	
     	String splitBy = ","; // the .csv values are separated by a comma
 		String line;
 		int index = 0;
@@ -192,6 +186,7 @@ public class Surface extends JPanel implements ActionListener  {
 			al.add(floatArray);
 				
 		}
+		
 	
 		
 		/*
@@ -234,21 +229,45 @@ public class Surface extends JPanel implements ActionListener  {
 		String[] b = line.split(splitBy); // get the coordinates
        */ 
 		
+		
 		counter++;
 		if(counter == randomTime)
 			circle = new ImageIcon("circle_im_blue.png").getImage();
 		
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
-	    
+	    boolean done = false;
+
 	    for(int c = 0; c< al.size(); c++){
 	    	
 	    	tempo = al.get(c);
-	    	int x = Math.round(tempo[0]);
-	    	int y = Math.round(tempo[0]);
+	    	int x =(int) Math.round(tempo[0]);
+	    	int y =(int) Math.round(tempo[0]);
 	    	g2d.drawImage(circle, x,y, null);
 	    	
+ 		
 	    }
+	    done = true;
+	    
+	    if(done==true){
+	    
+	    timer.stop();
+		ended = true;
+
+		int messageX = (int) screenOffset.actualScreenDimension.getWidth() / 2;
+		int messageY = (int) screenOffset.actualScreenDimension.getHeight() /2;
+	    int fontSize = 20;
+
+	    g.setFont(new Font("Calibri", Font.PLAIN, fontSize));
+	     
+	    g.setColor(Color.black);
+	    
+	    g.drawString("Experiment ended", messageX, messageY);
+	    g.drawString("Select File -> Done to save the results", messageX, messageY+fontSize);
+	    g.drawString("or File -> Restart to repeat (discard the results)", messageX, messageY+fontSize*2);
+
+		return false;}
+	    
 	    
 	    /*
 	    x = (int)Float.parseFloat(b[0]);
