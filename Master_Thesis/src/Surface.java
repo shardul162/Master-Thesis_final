@@ -159,7 +159,7 @@ public class Surface extends JPanel implements ActionListener  {
 			
 	        firstTime = false;
 		}
-		if(done)
+		if(index == al.size())
 		{
 			timer.stop();
 			ended = true;
@@ -215,6 +215,7 @@ public class Surface extends JPanel implements ActionListener  {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        
         currentTime = System.currentTimeMillis();
         try {
    			doDrawing(g);
