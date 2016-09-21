@@ -114,39 +114,8 @@ public class Surface extends JPanel implements ActionListener  {
         
         return timer;
     }
- /*   
-    public void storeCoords() throws IOException{
-    	
-    	//Array List Method
-    	
-    	//ArrayList<Float> al = new ArrayList<Float>();
-    	List<Float[]> al = new ArrayList<Float[]>();
-    	String splitBy = ","; // the .csv values are separated by a comma
-		String line;
-		int index = 0;
-		
-		
-		while((line = br.readLine()) != null){
-			
-			String[] b = line.split(splitBy);//reading coordinates
-			Float[] floatArray = new Float[b.length];
-			
-			for(int i = 0;i< b.length;i++){
-				
-					floatArray[i]= Float.parseFloat(b[i]);
-							
-			}
-			System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
-			
-			al.add(floatArray);
-				
-		}
 
-		
-
-    }*/
-    
-    
+       
     // the drawing function
     public boolean doDrawing(Graphics g) throws IOException {
     	
@@ -154,10 +123,15 @@ public class Surface extends JPanel implements ActionListener  {
     	Eye_Tracker eTracker = new Eye_Tracker();
     	Float[] tempo = new Float[2];
     	
+        double currentTime;
+        double PassedTime;
+    	
 		eTracker.start(true);
 		
 		//ArrayList<Float> al = new ArrayList<Float>();
-    	List<Float[]> al = new ArrayList<Float[]>();
+    	ArrayList<Float[]> al = new ArrayList<Float[]>();
+    	
+    	
     	
     	String splitBy = ","; // the .csv values are separated by a comma
 		String line;
@@ -171,24 +145,26 @@ public class Surface extends JPanel implements ActionListener  {
 		
 		}
 		
-		while((line = br.readLine()) != null){
+		while((line = br.readLine()) != null){	
 			
 			String[] b = line.split(splitBy);//reading coordinates
 			Float[] floatArray = new Float[b.length];
 			
-			for(int i = 0;i< b.length;i++){
-				
+			if(!line.isEmpty()) {
+				for(int i = 0;i< b.length;i++){
+					
 					floatArray[i]= Float.parseFloat(b[i]);
 							
-			}
-			System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
+				}
+				
+				System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
 			
-			al.add(floatArray);
+				al.add(floatArray);
+			}
+			
 				
 		}
-		
-	
-		
+
 		/*
     	// Read the .csv values
 	    String splitBy = ","; // the .csv values are separated by a comma
@@ -231,8 +207,9 @@ public class Surface extends JPanel implements ActionListener  {
 		
 		
 		counter++;
-		if(counter == randomTime)
+		if(counter == randomTime){
 			circle = new ImageIcon("circle_im_blue.png").getImage();
+		}
 		
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
@@ -240,10 +217,27 @@ public class Surface extends JPanel implements ActionListener  {
 
 	    for(int c = 0; c< al.size(); c++){
 	    	
+	    	
+	    	currentTime = System.currentTimeMillis();
 	    	tempo = al.get(c);
+	    	
 	    	int x =(int) Math.round(tempo[0]);
-	    	int y =(int) Math.round(tempo[0]);
+	    	int y =(int) Math.round(tempo[1]);
+	    	
+	    	System.out.println("The coordinats are: " +x +" " +y);
 	    	g2d.drawImage(circle, x,y, null);
+	    	
+	    	PassedTime = System.currentTimeMillis();
+	        //System.out.println("The time difference is: " +(PassedTime-currentTime));
+	        
+	            while(PassedTime-currentTime <= (50/3)){
+	            	
+	            	
+	            	PassedTime = System.currentTimeMillis(); 
+	            	//System.out.println(PassedTime-currentTime);
+	            	
+	            	}
+	            System.out.println("done ");
 	    	
  		
 	    }
@@ -266,7 +260,8 @@ public class Surface extends JPanel implements ActionListener  {
 	    g.drawString("Select File -> Done to save the results", messageX, messageY+fontSize);
 	    g.drawString("or File -> Restart to repeat (discard the results)", messageX, messageY+fontSize*2);
 
-		return false;}
+		return false;
+		}
 	    
 	    
 	    /*
@@ -302,19 +297,19 @@ public class Surface extends JPanel implements ActionListener  {
 			e1.printStackTrace();
 		}*/
         
-    /*    
+        
         try {
 			doDrawing(g);
 				
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
        
 
              
           //Try with an if else statement where we check if 1/60 seconds have passed 
-            
+       /*     
             currentTime = System.currentTimeMillis();
             try {
        			doDrawing(g);
@@ -334,7 +329,7 @@ public class Surface extends JPanel implements ActionListener  {
             	//System.out.println(PassedTime-currentTime);
             	
             	
-            }
+            }*/
                 
     }
 
