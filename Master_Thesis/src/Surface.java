@@ -38,6 +38,7 @@ public class Surface extends JPanel implements ActionListener  {
     int x = 0, y = 0;
     public StringBuffer dataBuffer = new StringBuffer("");
     boolean Tstart = false;
+    boolean done = false;
 
     SimpleDateFormat sdf; 
     String formattedDate;
@@ -55,7 +56,9 @@ public class Surface extends JPanel implements ActionListener  {
 	double xOffset, yOffset;
 	double currentTime;
     double PassedTime;
-    
+    Float[] tempo = new Float[2];
+    ArrayList<Float[]> al = new ArrayList<Float[]>();
+    int index = 0;
     
     private class ScreenOffset{
 	    public double widthOffset;
@@ -114,7 +117,6 @@ public class Surface extends JPanel implements ActionListener  {
     
     public void StoreCoords() throws  IOException{
     	
-    	ArrayList<Float[]> al = new ArrayList<Float[]>();
     	
     	 // the .csv values are separated by a comma
     	String splitBy = ",";
@@ -147,25 +149,17 @@ public class Surface extends JPanel implements ActionListener  {
     	Eye_Tracker getCoords = new Eye_Tracker();
     	Eye_Tracker eTracker = new Eye_Tracker(); 
 		eTracker.start(true);
-    	// Read the .csv values
-	    String splitBy = ","; // the .csv values are separated by a comma
-		String line;   
-		line = br.readLine();
+    	
 		
 		if(firstTime){
 			// get the pane size once in the beginning.
 			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
 			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());
 			
-//			screenOffset.setOffset(this.getRootPane().getSize().getWidth(), this.getRootPane().getSize().getHeight());
-/*
-			System.out.println("Pane: " + this.getRootPane().getSize().getWidth() + ", " + this.getRootPane().getSize().getHeight());
-	        System.out.println("Difference: " + xOffset + ", " + yOffset);
-	        System.out.println("Actual: " + tk.getScreenSize().getWidth() + ", " + tk.getScreenSize().getHeight());
-*/				
+			
 	        firstTime = false;
 		}
-		if(line == null)
+		if(done)
 		{
 			timer.stop();
 			ended = true;
@@ -192,13 +186,17 @@ public class Surface extends JPanel implements ActionListener  {
 		if(counter == randomTime)
 			circle = new ImageIcon("circle_im_blue.png").getImage();
 		
-		String[] b = line.split(splitBy); // get the coordinates
+		
         
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
-	    x = (int)Float.parseFloat(b[0]);
-	    y = (int)Float.parseFloat(b[1]);
+	    
+	    
+		tempo = al.get(index);
+		 x =(int) Math.round(tempo[0]);
+    	 y =(int) Math.round(tempo[1]);
 	    g2d.drawImage(circle, x,y, null);
+	    index++;
 	   
 	    
 	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
