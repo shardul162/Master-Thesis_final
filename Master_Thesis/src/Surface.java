@@ -19,6 +19,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 //import GUI.Eye_Tracker;
@@ -89,12 +90,31 @@ public class Surface extends JPanel implements ActionListener  {
 		tk = this.getToolkit();
 		screenOffset = new ScreenOffset(tk);
 		
-		
     	initTimer();
         loadImage();
+        
+        repainter = new Repainter();
+        (new Thread(repainter)).start();
     }
 
+    private class Repainter implements Runnable {
+		@Override
+		public void run() {
+			long nextTime = System.currentTimeMillis();
+			while (true) {
+				nextTime += 50/3;
+				while(System.currentTimeMillis() < nextTime);
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						repaint();
+					}
+				});
+			}
+		}
+    }
     
+    private Repainter repainter;
     
     // Timer initialization
     private void initTimer() {
@@ -147,8 +167,8 @@ public class Surface extends JPanel implements ActionListener  {
     // the drawing function
     public boolean doDrawing(Graphics g) throws IOException {
     	Eye_Tracker getCoords = new Eye_Tracker();
-    	Eye_Tracker eTracker = new Eye_Tracker(); 
-		eTracker.start(true);
+    	//Eye_Tracker eTracker = new Eye_Tracker(); 
+		//eTracker.start(true);
     	
 		
 		if(firstTime){
@@ -225,36 +245,11 @@ public class Surface extends JPanel implements ActionListener  {
    			
    			e.printStackTrace();
    		}
-        
-        PassedTime = System.currentTimeMillis();
-        System.out.println(PassedTime-currentTime);
-        while(PassedTime-currentTime <= (50/3)){
-        	
-        	PassedTime = System.currentTimeMillis(); 
-        }
-        	
-        	//System.out.println(PassedTime-currentTime);
-        	
-        	
+	
         }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    	
-    	currentTime = System.currentTimeMillis();
-    	
-        repaint();
-        PassedTime = System.currentTimeMillis();
-        System.out.println(PassedTime-currentTime);
-        while(PassedTime-currentTime <= (50/3)){
-        	
-        	PassedTime = System.currentTimeMillis(); 
-        	
-        	//System.out.println(PassedTime-currentTime);
-        	
-        	
-        }
-		//System.out.println("Update UI :" + Calendar.getInstance().getTime().getSeconds());
 
     }
     public  StringBuffer getBuffer() {
