@@ -301,6 +301,8 @@ public class GUI implements Runnable{
 	class FileLog{
 		public String constructFileName(String currentUser, String type) {
 			return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" + currentUser +"/" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());
+			//return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" ;
+			
 		}
 		
 		
@@ -308,12 +310,16 @@ public class GUI implements Runnable{
 		{
 		    String loggedData = resultsBuffer.toString();
 			File logFile = new File(filePath);
+			
+			//if(!logFile.exists()){
 	        try {
 	            //create a new file if it doesn't exist already
 	        	logFile.createNewFile();
 	        } catch (IOException ex) {
 	            ex.printStackTrace();
 			}
+	        
+	        
 			FileWriter fw = null;
 			try {
 				fw = new FileWriter(logFile.getAbsoluteFile());
@@ -321,6 +327,8 @@ public class GUI implements Runnable{
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
+			
+			
 			BufferedWriter bw = new BufferedWriter(fw);
 			try {
 				bw.write(loggedData);
