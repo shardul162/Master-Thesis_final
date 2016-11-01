@@ -12,14 +12,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 //import GUI.Eye_Tracker;
@@ -39,7 +37,6 @@ public class Surface extends JPanel implements ActionListener  {
     int x = 0, y = 0;
     public StringBuffer dataBuffer = new StringBuffer("");
     boolean Tstart = false;
-    boolean done = false;
 
     SimpleDateFormat sdf; 
     String formattedDate;
@@ -55,11 +52,7 @@ public class Surface extends JPanel implements ActionListener  {
 	Toolkit tk;
 	boolean firstTime;
 	double xOffset, yOffset;
-	double currentTime;
-    double PassedTime;
-    Float[] tempo = new Float[2];
-    ArrayList<Float[]> al = new ArrayList<Float[]>();
-    int index = 0;
+    
     
     private class ScreenOffset{
 	    public double widthOffset;
@@ -90,31 +83,12 @@ public class Surface extends JPanel implements ActionListener  {
 		tk = this.getToolkit();
 		screenOffset = new ScreenOffset(tk);
 		
+		
     	initTimer();
         loadImage();
-        
-        repainter = new Repainter();
-        (new Thread(repainter)).start();
     }
 
-    private class Repainter implements Runnable {
-		@Override
-		public void run() {
-			long nextTime = System.currentTimeMillis();
-			while (true) {
-				nextTime += 50/3;
-				while(System.currentTimeMillis() < nextTime);
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						repaint();
-					}
-				});
-			}
-		}
-    }
     
-    private Repainter repainter;
     
     // Timer initialization
     private void initTimer() {
@@ -135,51 +109,31 @@ public class Surface extends JPanel implements ActionListener  {
         return timer;
     }
     
-    public void StoreCoords() throws  IOException{
-    	
-    	
-    	 // the .csv values are separated by a comma
-    	String splitBy = ",";
-		String line;
-		
-		while((line = br.readLine()) != null){	
-			
-			String[] b = line.split(splitBy);//reading coordinates
-			Float[] floatArray = new Float[b.length];
-			
-			if(!line.isEmpty()) {
-				for(int i = 0;i< b.length;i++){
-					
-					floatArray[i]= Float.parseFloat(b[i]);
-							
-				}
-				
-				System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
-			
-				al.add(floatArray);
-				}
-		}
-			
-    	
-    }
-    
     
     // the drawing function
     public boolean doDrawing(Graphics g) throws IOException {
     	Eye_Tracker getCoords = new Eye_Tracker();
-    	//Eye_Tracker eTracker = new Eye_Tracker(); 
-		//eTracker.start(true);
-    	
+    	Eye_Tracker eTracker = new Eye_Tracker(); 
+		eTracker.start(true);
+    	// Read the .csv values
+	    String splitBy = ","; // the .csv values are separated by a comma
+		String line;   
+		line = br.readLine();
 		
 		if(firstTime){
 			// get the pane size once in the beginning.
 			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
 			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());
 			
-			
+//			screenOffset.setOffset(this.getRootPane().getSize().getWidth(), this.getRootPane().getSize().getHeight());
+/*
+			System.out.println("Pane: " + this.getRootPane().getSize().getWidth() + ", " + this.getRootPane().getSize().getHeight());
+	        System.out.println("Difference: " + xOffset + ", " + yOffset);
+	        System.out.println("Actual: " + tk.getScreenSize().getWidth() + ", " + tk.getScreenSize().getHeight());
+*/				
 	        firstTime = false;
 		}
-		if(index == al.size())
+		if(line == null)
 		{
 			timer.stop();
 			ended = true;
@@ -206,17 +160,13 @@ public class Surface extends JPanel implements ActionListener  {
 		if(counter == randomTime)
 			circle = new ImageIcon("circle_im_blue.png").getImage();
 		
-		
+		String[] b = line.split(splitBy); // get the coordinates
         
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
-	    
-	    
-		tempo = al.get(index);
-		 x =(int) Math.round(tempo[0]);
-    	 y =(int) Math.round(tempo[1]);
+	    x = (int)Float.parseFloat(b[0]);
+	    y = (int)Float.parseFloat(b[1]);
 	    g2d.drawImage(circle, x,y, null);
-	    index++;
 	   
 	    
 	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
@@ -228,28 +178,20 @@ public class Surface extends JPanel implements ActionListener  {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
         try {
-			StoreCoords();
-		} catch (IOException e1) {
+			doDrawing(g);
+			
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
-        
-        currentTime = System.currentTimeMillis();
-        try {
-   			doDrawing(g);
-   			
-   				
-   		} catch (IOException e) {
-   			
-   			e.printStackTrace();
-   		}
-	
-        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    
+        repaint();
+		System.out.println("Update UI :" + Calendar.getInstance().getTime().getSeconds());
 
     }
     public  StringBuffer getBuffer() {
