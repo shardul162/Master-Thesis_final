@@ -12,12 +12,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import com.theeyetribe.client.GazeManager;
@@ -26,6 +28,10 @@ import com.theeyetribe.client.GazeManager.ClientMode;
 import com.theeyetribe.client.data.GazeData;
 import com.theeyetribe.client.data.Point2D;
 
+//import Surface.Repainter;
+
+//import Surface.Repainter;
+
 public class Eye_Tracker implements Runnable {
 
 //public class Eye_Tracker{
@@ -33,46 +39,72 @@ public class Eye_Tracker implements Runnable {
 	double gaze_x_coordinate;
 	double gaze_y_coordinate;
 	String timeStamp = "";
-	double sampleCount = 0;
+	double sampleCount = 1;
 	Point2D coordinates;
 	GazeManager gazeManager = null;
 	GazeListner gazeListner = null;
 	boolean success_server_connect = false;
 	boolean Tstart = false;
+	boolean update = true;
+	boolean yes = false;
+	ArrayList<Float[][]> ale = new ArrayList<Float[][]>();
+	Float[][] floatArray = new Float[1][2];
+	
+	
+	
 	
 	//Surface surfaceObject = new Surface(timeStamp);
-	
-	public void start(boolean check){
-		if(check == true){
-			Tstart = true;
-		}else{
-			System.out.println("switch is wrong!!");
-		}
-		
-		
-	}
+
 	
 	
 	private class GazeListner implements com.theeyetribe.client.IGazeListener{
 		@Override
 		public void onGazeUpdate(GazeData gazeData){
 			
-			System.out.println("Update Gaze Coordinate: " + gazeData.smoothedCoordinates.x + ", " + gazeData.smoothedCoordinates.y + ":  " +  gazeData.timeStampString);
-
+		//	System.out.println("Update Gaze Coordinate: " + gazeData.smoothedCoordinates.x + ", " + gazeData.smoothedCoordinates.y + ":  " +  gazeData.timeStampString);		
 				gaze_x_coordinate = gazeData.smoothedCoordinates.x;
 				gaze_y_coordinate = gazeData.smoothedCoordinates.y;
 				timeStamp =  gazeData.timeStampString;
-				
-		
+
 		}
 	}
 	
 
-	public Point2D getCoordinates(){
+/*	public Point2D getCoordinates(){
 		 coordinates.x = gaze_x_coordinate/sampleCount;
 		 coordinates.y = gaze_y_coordinate/sampleCount;
 		return coordinates;
+	}*/
+	
+	public Eye_Tracker(){
+		if(yes == true){
+		 updater = new Updater();
+	        (new Thread(updater)).start();}
 	}
+	
+
+	
+	  private class Updater implements Runnable {
+			@Override
+			public void run() {
+				
+				while (true) {
+					
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							//gaze_x_coordinate = 0;
+							//gaze_y_coordinate = 0;
+							//coordinates = new Point2D(gaze_x_coordinate, gaze_y_coordinate);
+							coordinates = new Point2D();
+							Tstart = true;
+						}
+					});
+				}
+			}
+	    }
+	  
+	  private Updater updater;
 	
 	/*public Eye_Tracker(){
 
@@ -113,11 +145,7 @@ public class Eye_Tracker implements Runnable {
 	public void run(){
 		
 		try{
-			//if(Tstart == true){
-			gaze_x_coordinate = 0;
-			gaze_y_coordinate = 0;
-			coordinates = new Point2D();
-
+			
 			//Connecting to the Eye Tribe Server
 			gazeManager = GazeManager.getInstance();
 			success_server_connect =  gazeManager.activate(ApiVersion.VERSION_1_0, ClientMode.PUSH);
@@ -133,6 +161,16 @@ public class Eye_Tracker implements Runnable {
 				System.out.println("Connection to Eye Tribe Server failed...");
 			}
 			
+			/*while (update = true) {
+				
+
+						gaze_x_coordinate = 0;
+						gaze_y_coordinate = 0;
+						coordinates = new Point2D();
+						
+					}*/
+			
+			
 			//Adding a shut down hook to de-initialize Gaze Manager once the application is closed.
 			Runtime.getRuntime().addShutdownHook(
 					new Thread(){
@@ -144,8 +182,8 @@ public class Eye_Tracker implements Runnable {
 					}});
 					
 			
-					Thread.sleep(100);
-					}catch(Exception e){
+					//Thread.sleep(100);
+			}catch(Exception e){
 			
 		}
 	}
