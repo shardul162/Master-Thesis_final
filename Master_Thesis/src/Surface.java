@@ -79,6 +79,7 @@ public class Surface extends JPanel implements ActionListener  {
     
     public Surface(String fn) throws FileNotFoundException {
     	getCoords = new Eye_Tracker();
+    	getCoords.run();
 		//eTracker.start(true);
     	//Tstart = true;
     	br = new BufferedReader(new FileReader(fn));
@@ -228,7 +229,7 @@ public class Surface extends JPanel implements ActionListener  {
 	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
 	    //dataBuffer.append(x + "," + y + "," + (Math.floor(getCoords.gaze_x_coordinate) - xOffset )+ "," + (Math.floor(getCoords.gaze_y_coordinate) - yOffset) + "\n");
 	    
-	    System.out.println("Update UI: " + getCoords.gaze_x_coordinate + ", " + y);
+	   // System.out.println("Update UI: " + getCoords.gaze_x_coordinate + ", " + y);
 	    return true;
     }
 

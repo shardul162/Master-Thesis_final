@@ -28,14 +28,10 @@ import com.theeyetribe.client.GazeManager.ClientMode;
 import com.theeyetribe.client.data.GazeData;
 import com.theeyetribe.client.data.Point2D;
 
-//import Surface.Repainter;
 
-//import Surface.Repainter;
 
 public class Eye_Tracker implements Runnable {
 
-//public class Eye_Tracker{
-	//public Eye_Tracker eTracker;
 	double gaze_x_coordinate;
 	double gaze_y_coordinate;
 	String timeStamp = "";
@@ -50,32 +46,23 @@ public class Eye_Tracker implements Runnable {
 	ArrayList<Float[][]> ale = new ArrayList<Float[][]>();
 	Float[][] floatArray = new Float[1][2];
 	
-	
-	
-	
-	//Surface surfaceObject = new Surface(timeStamp);
 
-	
-	
 	private class GazeListner implements com.theeyetribe.client.IGazeListener{
 		@Override
 		public void onGazeUpdate(GazeData gazeData){
 			
-		//	System.out.println("Update Gaze Coordinate: " + gazeData.smoothedCoordinates.x + ", " + gazeData.smoothedCoordinates.y + ":  " +  gazeData.timeStampString);		
+			//System.out.println("Update Gaze Coordinate: " + gazeData.smoothedCoordinates.x + ", " + gazeData.smoothedCoordinates.y + ":  " +  gazeData.timeStampString);		
 				gaze_x_coordinate = gazeData.smoothedCoordinates.x;
 				gaze_y_coordinate = gazeData.smoothedCoordinates.y;
 				timeStamp =  gazeData.timeStampString;
+				System.out.println("Update Gaze Coordinate: " + gazeData.smoothedCoordinates.x + ", " + gazeData.smoothedCoordinates.y + ":  " +  gazeData.timeStampString);		
+				
 
 		}
 	}
 	
 
-/*	public Point2D getCoordinates(){
-		 coordinates.x = gaze_x_coordinate/sampleCount;
-		 coordinates.y = gaze_y_coordinate/sampleCount;
-		return coordinates;
-	}*/
-	
+/*	
 	public Eye_Tracker(){
 		if(yes == true){
 		 updater = new Updater();
@@ -93,18 +80,17 @@ public class Eye_Tracker implements Runnable {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							//gaze_x_coordinate = 0;
-							//gaze_y_coordinate = 0;
-							//coordinates = new Point2D(gaze_x_coordinate, gaze_y_coordinate);
+							
 							coordinates = new Point2D();
+							System.out.println("Here!!!");
 							Tstart = true;
 						}
 					});
 				}
 			}
-	    }
+	    }*/
 	  
-	  private Updater updater;
+	 // private Updater updater;
 	
 	/*public Eye_Tracker(){
 
