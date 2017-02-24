@@ -25,8 +25,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-//import GUI.FileLog;
-//import GUI.Surface;
 
 public class GUI implements Runnable{
 	
@@ -34,8 +32,8 @@ public class GUI implements Runnable{
 	String userName; // the selected username
 	String logFilePath;
 
-	public void Welcome()
-	{
+
+	public void Welcome(){
 
 		JFrame F = new JFrame("Welcome");
 		JLabel l;
@@ -51,7 +49,7 @@ public class GUI implements Runnable{
         JComboBox userList = new JComboBox(userDirs); // the dropdown menu for the user selection
         userList.setEditable(false);	// the list cannot be edited
         
-        // Save the selected user; know where to save the log file after the experiment has been carried out
+        // Save the selected user and know where to save the log file after the experiment has been carried out
         userName = (String)userList.getSelectedItem();
         userList.addActionListener(new ActionListener(){
 			@Override
@@ -70,7 +68,7 @@ public class GUI implements Runnable{
 
 		submitBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				String newUser = ".\\Logs\\";
+				String newUser = "./Logs/";
 				newUser += txt.getText();	
 				new File(newUser).mkdirs();
 				F.dispose();
@@ -94,8 +92,8 @@ public class GUI implements Runnable{
 	
 	
 	// The stimulus select (2nd) screen
-	public void stimulusSelect()
-	{
+	public void stimulusSelect(){
+		
 		JFrame stimulusFr = new JFrame("stimulusSelect");
 		JButton startB = new JButton();
 		JButton refreshB = new JButton();
@@ -271,6 +269,7 @@ public class GUI implements Runnable{
 	{
 		// Get the .csv filenames to a string list
 				File dir = new File(".");
+				System.out.println(dir.getAbsolutePath());
 				List<String> csvlist = Arrays.asList(dir.list(
 				   new FilenameFilter() {
 				      @Override public boolean accept(File dir, String name) {
@@ -286,7 +285,7 @@ public class GUI implements Runnable{
 	public String[] getCurrentUsers()
 	{
 		String dirs = ""; 
-        File logFolders = new File(".\\Logs");
+        File logFolders = new File("./Logs");
         File[] filesList = logFolders.listFiles();
         for(File f : filesList){
             if(f.isDirectory())
@@ -299,7 +298,7 @@ public class GUI implements Runnable{
 	
 	class FileLog{
 		public String constructFileName(String currentUser, String type) {
-			return logFilePath = ".\\Logs\\" + currentUser +"\\" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());
+			return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" + currentUser +"/" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());			
 		}
 		
 		
@@ -307,12 +306,15 @@ public class GUI implements Runnable{
 		{
 		    String loggedData = resultsBuffer.toString();
 			File logFile = new File(filePath);
+
 	        try {
 	            //create a new file if it doesn't exist already
 	        	logFile.createNewFile();
 	        } catch (IOException ex) {
 	            ex.printStackTrace();
 			}
+	        
+	        
 			FileWriter fw = null;
 			try {
 				fw = new FileWriter(logFile.getAbsoluteFile());
@@ -320,6 +322,8 @@ public class GUI implements Runnable{
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
+			
+			
 			BufferedWriter bw = new BufferedWriter(fw);
 			try {
 				bw.write(loggedData);
