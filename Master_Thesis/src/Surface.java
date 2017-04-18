@@ -22,14 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-//import GUI.Eye_Tracker;
-
-//import GUI.Eye_Tracker;
-//import GUI.Surface.ScreenOffset;
-
 public class Surface extends JPanel implements ActionListener  {
 
-	//private Eye_Tracker getCoords;
 	Eye_Tracker getCoords;
     private final int DELAY = 50;
     private Timer timer;
@@ -80,8 +74,6 @@ public class Surface extends JPanel implements ActionListener  {
     public Surface(String fn) throws FileNotFoundException {
     	getCoords = new Eye_Tracker();
     	getCoords.run();
-		//eTracker.start(true);
-    	//Tstart = true;
     	br = new BufferedReader(new FileReader(fn));
     
     	date = new Date();
@@ -99,6 +91,7 @@ public class Surface extends JPanel implements ActionListener  {
         (new Thread(repainter)).start();
     }
 
+    //HELPS ACHIEVING 60FPS PRINTING ON SCREEN
     private class Repainter implements Runnable {
 		@Override
 		public void run() {
@@ -125,7 +118,7 @@ public class Surface extends JPanel implements ActionListener  {
     }
     
     // Load the dot image; subject-to-change: load a different
-    // image for the color change (add params)
+    // image for the color change 
     private void loadImage() {
 
     	circle = new ImageIcon("circle_im.png").getImage();
@@ -155,8 +148,6 @@ public class Surface extends JPanel implements ActionListener  {
 					floatArray[i]= Float.parseFloat(b[i]);
 							
 				}
-				//Working Successfully. Un-comment for debugging
-				//System.out.println("The floatArray contains: "+floatArray[0]+" "+floatArray[1]);
 			
 				al.add(floatArray);
 				}
@@ -168,40 +159,26 @@ public class Surface extends JPanel implements ActionListener  {
     
     // the drawing function
     public boolean doDrawing(Graphics g) throws IOException {
-    	//Eye_Tracker getCoords = new Eye_Tracker();
-    	Eye_Tracker truth = new Eye_Tracker();
-    	truth.yes = true;
-    	//Eye_Tracker eTracker = new Eye_Tracker(); 
-		//eTracker.start(true);
-    	
-		
+
 		if(firstTime){
 			// get the pane size once in the beginning.
 			xOffset = java.lang.Math.abs(this.getRootPane().getSize().getWidth() - tk.getScreenSize().getWidth());
 			yOffset = java.lang.Math.abs(this.getRootPane().getSize().getHeight() - tk.getScreenSize().getHeight());
-			
-			
+
 	        firstTime = false;
 		}
-		if(index == al.size())
-		{
+		
+		if(index == al.size()){
+			
 			timer.stop();
 			ended = true;
-			//Eye_Tracker check = new Eye_Tracker();
-			//check.update = false;
-			
-/*
-			Toolkit tk = this.getToolkit();
-			    Dimension dim = tk.getScreenSize();
-*/
-			    int messageX = (int) screenOffset.actualScreenDimension.getWidth() / 2;
-			    int messageY = (int) screenOffset.actualScreenDimension.getHeight() /2;
+
+			int messageX = (int) screenOffset.actualScreenDimension.getWidth() / 2;
+			int messageY = (int) screenOffset.actualScreenDimension.getHeight() /2;
 		    int fontSize = 20;
 
-		    g.setFont(new Font("Calibri", Font.PLAIN, fontSize));
-		     
+		    g.setFont(new Font("Calibri", Font.PLAIN, fontSize));   
 		    g.setColor(Color.black);
-		    
 		    g.drawString("Experiment ended", messageX, messageY);
 		    g.drawString("Select File -> Done to save the results", messageX, messageY+fontSize);
 		    g.drawString("or File -> Restart to repeat (discard the results)", messageX, messageY+fontSize*2);
@@ -209,12 +186,11 @@ public class Surface extends JPanel implements ActionListener  {
 			return false;
 			
 		}
+		
 		counter++;
 		if(counter == randomTime)
 			circle = new ImageIcon("circle_im_blue.png").getImage();
-		
-		
-        
+ 
 		// Do the drawing
 	    Graphics2D g2d = (Graphics2D) g;
 	    
@@ -222,14 +198,12 @@ public class Surface extends JPanel implements ActionListener  {
 		tempo = al.get(index);
 		 x =(int) Math.round(tempo[0]);
     	 y =(int) Math.round(tempo[1]);
-	    g2d.drawImage(circle, x,y, null);
+	    g2d.drawImage(circle, x+630,y+190, null);
 	    index++;
 	   
 	    //SAVING INTO FILE
 	    dataBuffer.append(x + "," + y + "," + (getCoords.gaze_x_coordinate - xOffset )+ "," + (getCoords.gaze_y_coordinate - yOffset) + "\n");
-	    //dataBuffer.append(x + "," + y + "," + (Math.floor(getCoords.gaze_x_coordinate) - xOffset )+ "," + (Math.floor(getCoords.gaze_y_coordinate) - yOffset) + "\n");
 	    
-	   // System.out.println("Update UI: " + getCoords.gaze_x_coordinate + ", " + y);
 	    return true;
     }
 
@@ -247,8 +221,7 @@ public class Surface extends JPanel implements ActionListener  {
         currentTime = System.currentTimeMillis();
         try {
    			doDrawing(g);
-   			
-   				
+		
    		} catch (IOException e) {
    			
    			e.printStackTrace();

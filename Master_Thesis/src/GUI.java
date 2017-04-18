@@ -25,21 +25,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-//import GUI.FileLog;
-//import GUI.Surface;
-
-//import GUI.Eye_Tracker;
 
 public class GUI implements Runnable{
 	
 	String fileName; // the filename of the stimulus
 	String userName; // the selected username
 	String logFilePath;
-	
-	//public Eye_Tracker getCoords;
+	boolean fin = false;
 
-	public void Welcome()
-	{
+
+	public void Welcome(){
 
 		JFrame F = new JFrame("Welcome");
 		JLabel l;
@@ -55,7 +50,7 @@ public class GUI implements Runnable{
         JComboBox userList = new JComboBox(userDirs); // the dropdown menu for the user selection
         userList.setEditable(false);	// the list cannot be edited
         
-        // Save the selected user; know where to save the log file after the experiment has been carried out
+        // Save the selected user and know where to save the log file after the experiment has been carried out
         userName = (String)userList.getSelectedItem();
         userList.addActionListener(new ActionListener(){
 			@Override
@@ -98,8 +93,8 @@ public class GUI implements Runnable{
 	
 	
 	// The stimulus select (2nd) screen
-	public void stimulusSelect()
-	{
+	public void stimulusSelect(){
+		
 		JFrame stimulusFr = new JFrame("stimulusSelect");
 		JButton startB = new JButton();
 		JButton refreshB = new JButton();
@@ -187,6 +182,7 @@ public class GUI implements Runnable{
 		finishBut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 					LogOff.dispose();
+					fin = true;
 			}
 	});
 		
@@ -304,9 +300,7 @@ public class GUI implements Runnable{
 	
 	class FileLog{
 		public String constructFileName(String currentUser, String type) {
-			return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" + currentUser +"/" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());
-			//return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" ;
-			
+			return logFilePath = "./Users/shardulsolapure/Documents/workspace/Master_Thesis/logs" + currentUser +"/" + currentUser + "_" + type + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss'.csv'").format(new Date());			
 		}
 		
 		
@@ -314,8 +308,7 @@ public class GUI implements Runnable{
 		{
 		    String loggedData = resultsBuffer.toString();
 			File logFile = new File(filePath);
-			
-			//if(!logFile.exists()){
+
 	        try {
 	            //create a new file if it doesn't exist already
 	        	logFile.createNewFile();
